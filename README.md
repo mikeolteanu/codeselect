@@ -56,11 +56,12 @@ codeselect --help
 
 ## 📄 Output Formats
 
-CodeSelect offers three output formats:
+CodeSelect offers four output formats:
 
 - **LLM** (default): Optimized for language models with context about file relationships
 - **Markdown**: GitHub-compatible markdown with syntax highlighting
 - **TXT**: Plain text format for maximum compatibility
+- **Aider**: Just filenames separated by spaces (for use with aider and similar tools)
 
 ```bash
 # Generate GitHub-compatible markdown
@@ -68,6 +69,9 @@ codeselect --format md
 
 # Generate AI-optimized format
 codeselect --format llm
+
+# Generate space-separated filenames for aider
+codeselect --format aider
 ```
 
 ## ⚙️ Advanced Options

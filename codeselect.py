@@ -900,6 +900,13 @@ def generate_output_filename(directory_path, output_format='txt'):
     
     return output_name
 
+def write_aider_output(output_path, file_contents):
+    """Write output in aider format - just filenames separated by spaces."""
+    with open(output_path, 'w', encoding='utf-8') as f:
+        # Just write the filenames separated by spaces
+        filenames = [path for path, _ in file_contents]
+        f.write(' '.join(filenames))
+
 def write_output_file(output_path, root_path, root_node, file_contents, output_format='txt', dependencies=None):
     """
     Write the file tree and selected content to an output file.
@@ -908,6 +915,7 @@ def write_output_file(output_path, root_path, root_node, file_contents, output_f
         - txt: Simple text format with <file_map> and <file_contents> sections
         - md: GitHub-compatible markdown
         - llm: Format optimized for LLMs
+        - aider: Just filenames separated by spaces
     """
     if output_format == 'md':
         write_markdown_output(output_path, root_path, root_node, file_contents)
@@ -917,6 +925,8 @@ def write_output_file(output_path, root_path, root_node, file_contents, output_f
             all_files = collect_all_content(root_node, root_path)
             dependencies = analyze_dependencies(root_path, all_files)
         write_llm_optimized_output(output_path, root_path, root_node, file_contents, dependencies)
+    elif output_format == 'aider':
+        write_aider_output(output_path, file_contents)
     else:
         # Default txt format
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -995,7 +1005,7 @@ def main():
     )
     parser.add_argument(
         "--format",
-        choices=["txt", "md", "llm"],
+        choices=["txt", "md", "llm", "aider"],
         default=DEFAULT_FORMAT,
         help=f"Output format (default: {DEFAULT_FORMAT})"
     )
