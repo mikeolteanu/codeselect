@@ -7,6 +7,40 @@ A simple tool that generates a file tree and extracts the content of selected fi
 to share with AI assistants like Claude or ChatGPT.
 """
 
+# ===== Configuration Settings =====
+# These settings can be overridden by command-line arguments
+
+# Default directory to scan (relative to current directory)
+DEFAULT_DIRECTORY = "."
+
+# Default output format (txt, md, llm)
+DEFAULT_FORMAT = "llm"
+
+# Default output filename (None = auto-generate based on directory name)
+DEFAULT_OUTPUT = None
+
+# Skip the selection interface and include all files
+SKIP_SELECTION = False
+
+# Enable automatic copy to clipboard
+COPY_TO_CLIPBOARD = False
+
+# Default ignore patterns for files and directories
+DEFAULT_IGNORE_PATTERNS = [
+    '.git',
+    '__pycache__',
+    '*.pyc',
+    '.DS_Store',
+    '.idea',
+    '.vscode',
+    'node_modules',
+    'venv',
+    '.env',
+    '*.log',
+    '*.sh'
+]
+# ===== End Configuration Settings =====
+
 import os
 import sys
 import re
@@ -19,22 +53,16 @@ import subprocess
 from pathlib import Path
 import datetime
 
-# Import configuration
-try:
-    import config
-except ImportError:
-    # Create default config if it doesn't exist
-    class DefaultConfig:
-        DEFAULT_DIRECTORY = "."
-        DEFAULT_FORMAT = "llm"
-        DEFAULT_OUTPUT = None
-        SKIP_SELECTION = False
-        COPY_TO_CLIPBOARD = False
-        DEFAULT_IGNORE_PATTERNS = [
-            '.git', '__pycache__', '*.pyc', '.DS_Store', 
-            '.idea', '.vscode'
-        ]
-    config = DefaultConfig
+# Create config object for backward compatibility
+class Config:
+    DEFAULT_DIRECTORY = DEFAULT_DIRECTORY
+    DEFAULT_FORMAT = DEFAULT_FORMAT
+    DEFAULT_OUTPUT = DEFAULT_OUTPUT
+    SKIP_SELECTION = SKIP_SELECTION
+    COPY_TO_CLIPBOARD = COPY_TO_CLIPBOARD
+    DEFAULT_IGNORE_PATTERNS = DEFAULT_IGNORE_PATTERNS
+
+config = Config
 
 __version__ = "1.0.0"
 
@@ -939,30 +967,30 @@ def main():
     parser.add_argument(
         "directory",
         nargs="?",
-        default=config.DEFAULT_DIRECTORY,
-        help=f"Directory to scan (default: {config.DEFAULT_DIRECTORY})"
+        default=DEFAULT_DIRECTORY,
+        help=f"Directory to scan (default: {DEFAULT_DIRECTORY})"
     )
     parser.add_argument(
         "-o", "--output",
-        default=config.DEFAULT_OUTPUT,
+        default=DEFAULT_OUTPUT,
         help="Output file path (default: based on directory name)"
     )
     parser.add_argument(
         "--format",
         choices=["txt", "md", "llm"],
-        default=config.DEFAULT_FORMAT,
-        help=f"Output format (default: {config.DEFAULT_FORMAT})"
+        default=DEFAULT_FORMAT,
+        help=f"Output format (default: {DEFAULT_FORMAT})"
     )
     parser.add_argument(
         "--skip-selection",
         action="store_true",
-        default=config.SKIP_SELECTION,
+        default=SKIP_SELECTION,
         help="Skip the selection interface and include all files"
     )
     parser.add_argument(
         "--yes-clipboard",
         action="store_true",
-        default=config.COPY_TO_CLIPBOARD,
+        default=COPY_TO_CLIPBOARD,
         help="Enable automatic copy to clipboard"
     )
     parser.add_argument(
@@ -978,13 +1006,7 @@ def main():
         print(f"CodeSelect v{__version__}")
         sys.exit(0)
         
-    # Show config file location
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.py")
-    if os.path.exists(config_path):
-        print(f"Using configuration from: {config_path}")
-    else:
-        print(f"No config.py found. Default settings will be used.")
-        print(f"You can create a config file at: {config_path}")
+    # Configuration is now embedded in the script
 
     # Resolve directory path
     root_path = os.path.abspath(args.directory)

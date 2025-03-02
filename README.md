@@ -91,11 +91,12 @@ options:
   --version             Show version information
 ```
 
-### Configuration File
+### Configuration
 
-CodeSelect supports a `config.py` file for setting default behaviors. Create this file in the same directory as the script to customize defaults. Command-line options will override these settings.
+CodeSelect has built-in default settings that can be overridden using command-line arguments. The configuration settings are embedded directly in the script for easy customization.
 
-Example `config.py`:
+You can modify the default settings by editing the configuration section at the top of the `codeselect.py` file:
+
 ```python
 # Default directory to scan
 DEFAULT_DIRECTORY = "."
@@ -110,12 +111,13 @@ DEFAULT_OUTPUT = None
 SKIP_SELECTION = False
 
 # Enable automatic copy to clipboard
-COPY_TO_CLIPBOARD = True
+COPY_TO_CLIPBOARD = False
 
 # Default ignore patterns
 DEFAULT_IGNORE_PATTERNS = [
     '.git', '__pycache__', '*.pyc', '.DS_Store', 
-    '.idea', '.vscode', 'node_modules'
+    '.idea', '.vscode', 'node_modules', 'venv',
+    '.env', '*.log', '*.sh'
 ]
 ```
 
