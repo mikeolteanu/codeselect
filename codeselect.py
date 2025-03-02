@@ -828,19 +828,13 @@ def write_file_tree_to_string(node, prefix='', is_last=True):
     return result
 
 def generate_output_filename(directory_path, output_format='txt'):
-    """Generate a unique output filename based on the directory name."""
+    """Generate an output filename based on the directory name."""
     base_name = os.path.basename(os.path.abspath(directory_path))
     extension = f".{output_format}"
 
-    # Start with the base name
+    # Simply use the base name with extension
     output_name = f"{base_name}{extension}"
-    counter = 1
-
-    # If file exists, add a counter
-    while os.path.exists(output_name):
-        output_name = f"{base_name}({counter}){extension}"
-        counter += 1
-
+    
     return output_name
 
 def write_output_file(output_path, root_path, root_node, file_contents, output_format='txt', dependencies=None):
