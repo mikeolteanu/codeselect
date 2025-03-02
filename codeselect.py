@@ -37,7 +37,11 @@ DEFAULT_IGNORE_PATTERNS = [
     'venv',
     '.env',
     '*.log',
-    '*.sh'
+    '*.sh',
+    '*.png',
+    '*.toml',
+    '*.nix',
+    '*.mp3'
 ]
 # ===== End Configuration Settings =====
 
