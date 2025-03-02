@@ -977,6 +977,14 @@ def main():
     if args.version:
         print(f"CodeSelect v{__version__}")
         sys.exit(0)
+        
+    # Show config file location
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.py")
+    if os.path.exists(config_path):
+        print(f"Using configuration from: {config_path}")
+    else:
+        print(f"No config.py found. Default settings will be used.")
+        print(f"You can create a config file at: {config_path}")
 
     # Resolve directory path
     root_path = os.path.abspath(args.directory)
