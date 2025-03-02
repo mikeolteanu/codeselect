@@ -15,13 +15,8 @@ CODESELECT_PATH="$USER_BIN/codeselect"
 # Download or create the file
 echo "Downloading CodeSelect..."
 curl -fsSL https://raw.githubusercontent.com/mikeolteanu/codeselect/main/codeselect.py -o "$CODESELECT_PATH" 2>/dev/null || {
-  # If curl fails (e.g., GitHub URL not yet available), copy from the local file
-  if [ -f "codeselect.py" ]; then
-    cp "codeselect.py" "$CODESELECT_PATH"
-  else
-    echo "Error: Cannot download or find codeselect.py"
-    exit 1
-  fi
+  echo "Error: Cannot download or find codeselect.py"
+  exit 1
 }
 
 # Make the script executable
