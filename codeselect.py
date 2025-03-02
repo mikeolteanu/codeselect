@@ -415,6 +415,9 @@ def analyze_dependencies(root_path, file_contents):
 
 def write_llm_optimized_output(output_path, root_path, root_node, file_contents, dependencies):
     """Write output in a format optimized for LLM analysis."""
+    # Get root directory name for path normalization
+    root_dir_name = os.path.basename(root_path)
+    
     with open(output_path, 'w', encoding='utf-8') as f:
         # Header and overview
         f.write("# PROJECT ANALYSIS FOR AI ASSISTANT\n\n")
@@ -494,7 +497,11 @@ def write_llm_optimized_output(output_path, root_path, root_node, file_contents,
             f.write("### Core Files (most referenced)\n\n")
             for file, refs in sorted(referenced_by.items(), key=lambda x: len(x[1]), reverse=True)[:10]:
                 if len(refs) > 1:  # Only files referenced multiple times
-                    f.write(f"- **`{file}`** is imported by {len(refs)} files\n")
+                    # Remove root directory name if it's at the start of the path
+                    display_file = file
+                    if display_file.startswith(f"{root_dir_name}/"):
+                        display_file = display_file[len(root_dir_name)+1:]
+                    f.write(f"- **`{display_file}`** is imported by {len(refs)} files\n")
             f.write("\n")
 
         # Display dependencies per file
@@ -504,11 +511,22 @@ def write_llm_optimized_output(output_path, root_path, root_node, file_contents,
                 internal_deps = [d for d in deps if isinstance(d, str) and os.path.sep in d]
                 external_deps = [d for d in deps if d not in internal_deps]
 
-                f.write(f"- **`{file}`**:\n")
+                # Remove root directory name if it's at the start of the path
+                display_file = file
+                if display_file.startswith(f"{root_dir_name}/"):
+                    display_file = display_file[len(root_dir_name)+1:]
+                
+                f.write(f"- **`{display_file}`**:\n")
 
                 if internal_deps:
                     f.write(f"  - *Internal dependencies*: ")
-                    f.write(", ".join(f"`{d}`" for d in sorted(internal_deps)[:5]))
+                    normalized_deps = []
+                    for d in sorted(internal_deps)[:5]:
+                        if d.startswith(f"{root_dir_name}/"):
+                            normalized_deps.append(f"`{d[len(root_dir_name)+1:]}`")
+                        else:
+                            normalized_deps.append(f"`{d}`")
+                    f.write(", ".join(normalized_deps))
                     if len(internal_deps) > 5:
                         f.write(f" and {len(internal_deps)-5} more")
                     f.write("\n")
@@ -526,7 +544,11 @@ def write_llm_optimized_output(output_path, root_path, root_node, file_contents,
         f.write("*Note: The content below includes only selected files.*\n\n")
 
         for path, content in file_contents:
-            f.write(f"### {path}\n\n")
+            # Remove root directory name if it's at the start of the path
+            display_path = path
+            if display_path.startswith(f"{root_dir_name}/"):
+                display_path = display_path[len(root_dir_name)+1:]
+            f.write(f"### {display_path}\n\n")
 
             # Add file info if available
             file_deps = dependencies.get(path, set())
@@ -538,7 +560,13 @@ def write_llm_optimized_output(output_path, root_path, root_node, file_contents,
                     f.write("**Dependencies:**\n")
 
                     if internal_deps:
-                        f.write("- Internal: " + ", ".join(f"`{d}`" for d in sorted(internal_deps)[:3]))
+                        normalized_deps = []
+                        for d in sorted(internal_deps)[:3]:
+                            if d.startswith(f"{root_dir_name}/"):
+                                normalized_deps.append(f"`{d[len(root_dir_name)+1:]}`")
+                            else:
+                                normalized_deps.append(f"`{d}`")
+                        f.write("- Internal: " + ", ".join(normalized_deps))
                         if len(internal_deps) > 3:
                             f.write(f" and {len(internal_deps)-3} more")
                         f.write("\n")
@@ -900,11 +928,17 @@ def generate_output_filename(directory_path, output_format='txt'):
     
     return output_name
 
-def write_aider_output(output_path, file_contents):
+def write_aider_output(output_path, file_contents, root_path):
     """Write output in aider format - just filenames separated by spaces."""
     with open(output_path, 'w', encoding='utf-8') as f:
-        # Just write the filenames separated by spaces
-        filenames = [path for path, _ in file_contents]
+        # Just write the filenames separated by spaces, removing root directory name
+        root_dir_name = os.path.basename(root_path)
+        filenames = []
+        for path, _ in file_contents:
+            # Remove root directory name if it's at the start of the path
+            if path.startswith(f"{root_dir_name}/"):
+                path = path[len(root_dir_name)+1:]
+            filenames.append(path)
         f.write(' '.join(filenames))
 
 def write_output_file(output_path, root_path, root_node, file_contents, output_format='txt', dependencies=None):
@@ -926,7 +960,7 @@ def write_output_file(output_path, root_path, root_node, file_contents, output_f
             dependencies = analyze_dependencies(root_path, all_files)
         write_llm_optimized_output(output_path, root_path, root_node, file_contents, dependencies)
     elif output_format == 'aider':
-        write_aider_output(output_path, file_contents)
+        write_aider_output(output_path, file_contents, root_path)
     else:
         # Default txt format
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -941,8 +975,13 @@ def write_output_file(output_path, root_path, root_node, file_contents, output_f
 
             # Write file contents
             f.write("<file_contents>\n")
+            root_dir_name = os.path.basename(root_path)
             for path, content in file_contents:
-                f.write(f"File: {path}\n")
+                # Remove root directory name if it's at the start of the path
+                display_path = path
+                if display_path.startswith(f"{root_dir_name}/"):
+                    display_path = display_path[len(root_dir_name)+1:]
+                f.write(f"File: {display_path}\n")
                 f.write("```")
 
                 # Determine extension for syntax highlighting
@@ -976,8 +1015,13 @@ def write_markdown_output(output_path, root_path, root_node, file_contents):
         # Write file contents section
         f.write("## 📄 File Contents\n\n")
 
+        root_dir_name = os.path.basename(root_path)
         for path, content in file_contents:
-            f.write(f"### {path}\n\n")
+            # Remove root directory name if it's at the start of the path
+            display_path = path
+            if display_path.startswith(f"{root_dir_name}/"):
+                display_path = display_path[len(root_dir_name)+1:]
+            f.write(f"### {display_path}\n\n")
 
             # Add syntax highlighting based on extension
             ext = os.path.splitext(path)[1][1:].lower()
