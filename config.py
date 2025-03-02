@@ -33,5 +33,6 @@ DEFAULT_IGNORE_PATTERNS = [
     'node_modules',
     'venv',
     '.env',
-    '*.log'
+    '*.log',
+    '*.sh'
 ]
