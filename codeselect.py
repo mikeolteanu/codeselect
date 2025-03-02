@@ -41,7 +41,21 @@ DEFAULT_IGNORE_PATTERNS = [
     '*.png',
     '*.toml',
     '*.nix',
-    '*.mp3'
+    '*.mp3',
+    '*.mp4',
+    '*.wav',
+    '*.mpg',
+    '*.avi',
+    '*.mov',
+    '*.mkv',
+    '*.pdf',
+    '*.lock',
+    '*.zip',
+    '*.tar',
+    '*.gz',
+    '*.7z',
+    '*.rar',
+   
 ]
 # ===== End Configuration Settings =====
 
