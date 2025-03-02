@@ -14,7 +14,7 @@ CodeSelect is a lightweight tool that helps developers share code with AI assist
 
 ```bash
 # One-line installation
-curl -sSL https://raw.githubusercontent.com/mikeolteanu/codeselect/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/mikeolteanu/codeselect/refs/heads/main/install.sh | bash
 ```
 
 ## ✨ Features
