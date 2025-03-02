@@ -13,8 +13,8 @@ to share with AI assistants like Claude or ChatGPT.
 # Default directory to scan (relative to current directory)
 DEFAULT_DIRECTORY = "."
 
-# Default output format (txt, md, llm)
-DEFAULT_FORMAT = "llm"
+# Default output format (txt, md, llm, aider)
+DEFAULT_FORMAT = "aider"
 
 # Default output filename (None = auto-generate based on directory name)
 DEFAULT_OUTPUT = None
