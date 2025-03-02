@@ -47,6 +47,10 @@ def build_file_tree(root_path, ignore_patterns=None):
         ignore_patterns = ['.git', '__pycache__', '*.pyc', '.DS_Store', '.idea', '.vscode']
 
     def should_ignore(path):
+        # Ignore hidden files and directories (starting with .)
+        if os.path.basename(path).startswith('.'):
+            return True
+        
         for pattern in ignore_patterns:
             if fnmatch.fnmatch(os.path.basename(path), pattern):
                 return True
