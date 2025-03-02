@@ -73,7 +73,7 @@ codeselect --format llm
 ## ⚙️ Advanced Options
 
 ```
-usage: codeselect [-h] [-o OUTPUT] [--format {txt,md,llm}] [--skip-selection] [--no-clipboard] [--version] [directory]
+usage: codeselect [-h] [-o OUTPUT] [--format {txt,md,llm}] [--skip-selection] [--yes-clipboard] [--version] [directory]
 
 CodeSelect v1.0.0 - Select files to share with AI assistants
 
@@ -87,8 +87,36 @@ options:
   --format {txt,md,llm}
                         Output format (default: llm - optimized for LLMs)
   --skip-selection      Skip the selection interface and include all files
-  --yes-clipboard      Enable automatic copy to clipboard (disabled by default)
+  --yes-clipboard       Enable automatic copy to clipboard (disabled by default)
   --version             Show version information
+```
+
+### Configuration File
+
+CodeSelect supports a `config.py` file for setting default behaviors. Create this file in the same directory as the script to customize defaults. Command-line options will override these settings.
+
+Example `config.py`:
+```python
+# Default directory to scan
+DEFAULT_DIRECTORY = "."
+
+# Default output format (txt, md, llm)
+DEFAULT_FORMAT = "llm"
+
+# Default output filename (None = auto-generate)
+DEFAULT_OUTPUT = None
+
+# Skip the selection interface
+SKIP_SELECTION = False
+
+# Enable automatic copy to clipboard
+COPY_TO_CLIPBOARD = True
+
+# Default ignore patterns
+DEFAULT_IGNORE_PATTERNS = [
+    '.git', '__pycache__', '*.pyc', '.DS_Store', 
+    '.idea', '.vscode', 'node_modules'
+]
 ```
 
 ## 🔍 How It Works

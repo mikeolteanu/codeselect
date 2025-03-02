@@ -19,6 +19,23 @@ import subprocess
 from pathlib import Path
 import datetime
 
+# Import configuration
+try:
+    import config
+except ImportError:
+    # Create default config if it doesn't exist
+    class DefaultConfig:
+        DEFAULT_DIRECTORY = "."
+        DEFAULT_FORMAT = "llm"
+        DEFAULT_OUTPUT = None
+        SKIP_SELECTION = False
+        COPY_TO_CLIPBOARD = False
+        DEFAULT_IGNORE_PATTERNS = [
+            '.git', '__pycache__', '*.pyc', '.DS_Store', 
+            '.idea', '.vscode'
+        ]
+    config = DefaultConfig
+
 __version__ = "1.0.0"
 
 # Structure to represent a node in the file tree
@@ -44,7 +61,7 @@ class Node:
 def build_file_tree(root_path, ignore_patterns=None):
     """Build a tree representing the file structure."""
     if ignore_patterns is None:
-        ignore_patterns = ['.git', '__pycache__', '*.pyc', '.DS_Store', '.idea', '.vscode']
+        ignore_patterns = config.DEFAULT_IGNORE_PATTERNS
 
     def should_ignore(path):
         # Ignore hidden files and directories (starting with .)
@@ -922,28 +939,31 @@ def main():
     parser.add_argument(
         "directory",
         nargs="?",
-        default=".",
-        help="Directory to scan (default: current directory)"
+        default=config.DEFAULT_DIRECTORY,
+        help=f"Directory to scan (default: {config.DEFAULT_DIRECTORY})"
     )
     parser.add_argument(
         "-o", "--output",
+        default=config.DEFAULT_OUTPUT,
         help="Output file path (default: based on directory name)"
     )
     parser.add_argument(
         "--format",
         choices=["txt", "md", "llm"],
-        default="llm",
-        help="Output format (default: llm - optimized for LLMs)"
+        default=config.DEFAULT_FORMAT,
+        help=f"Output format (default: {config.DEFAULT_FORMAT})"
     )
     parser.add_argument(
         "--skip-selection",
         action="store_true",
+        default=config.SKIP_SELECTION,
         help="Skip the selection interface and include all files"
     )
     parser.add_argument(
         "--yes-clipboard",
         action="store_true",
-        help="Enable automatic copy to clipboard (disabled by default)"
+        default=config.COPY_TO_CLIPBOARD,
+        help="Enable automatic copy to clipboard"
     )
     parser.add_argument(
         "--version",
