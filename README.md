@@ -50,7 +50,7 @@ codeselect --help
 - **←/→**: Collapse/expand directories
 - **A**: Select all files
 - **N**: Deselect all files
-- **C**: Toggle clipboard copy
+- **B**: Toggle clipboard copy
 - **D** or **Enter**: Complete selection and export
 - **X** or **Esc**: Exit without saving
 
@@ -87,7 +87,7 @@ options:
   --format {txt,md,llm}
                         Output format (default: llm - optimized for LLMs)
   --skip-selection      Skip the selection interface and include all files
-  --no-clipboard        Disable automatic copy to clipboard
+  --yes-clipboard      Enable automatic copy to clipboard (disabled by default)
   --version             Show version information
 ```
 
@@ -97,7 +97,7 @@ options:
 2. **Select**: Interactive interface lets you choose which files to include
 3. **Analyze**: Automatically detects dependencies between files
 4. **Generate**: Creates a specially formatted output optimized for AI assistants
-5. **Copy**: Automatically copies result to clipboard for easy pasting
+5. **Copy**: Optionally copies result to clipboard for easy pasting (when enabled)
 
 ## 💻 Development
 

@@ -947,9 +947,9 @@ def main():
         help="Skip the selection interface and include all files"
     )
     parser.add_argument(
-        "--no-clipboard",
+        "--yes-clipboard",
         action="store_true",
-        help="Disable automatic copy to clipboard"
+        help="Enable automatic copy to clipboard (disabled by default)"
     )
     parser.add_argument(
         "--version",
@@ -1017,7 +1017,7 @@ def main():
     print(f"\nOutput written to: {output_path}")
 
     # Copy to clipboard if enabled
-    if not args.no_clipboard:
+    if args.yes_clipboard:
         try:
             with open(output_path, 'r', encoding='utf-8') as f:
                 content = f.read()
