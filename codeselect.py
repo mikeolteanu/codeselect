@@ -792,13 +792,26 @@ class FileSelector:
 
     def toggle_selection(self, node):
         """Toggle selection of a node and its children if it's a directory."""
-        node.selected = not node.selected
+        # Determine the new selection state (opposite of current)
+        new_state = not node.selected
+        node.selected = new_state
 
+        # If it's a directory, apply the same state to all children recursively
         if node.is_dir and node.children:
             for child in node.children.values():
-                child.selected = node.selected
-                if child.is_dir:
-                    self.toggle_selection(child)
+                child.selected = new_state
+                if child.is_dir and child.children:
+                    # Apply recursively to all descendants
+                    self._set_selection_recursive(child, new_state)
+    
+    def _set_selection_recursive(self, node, select_state):
+        """Helper method to recursively set selection state."""
+        node.selected = select_state
+        if node.is_dir and node.children:
+            for child in node.children.values():
+                child.selected = select_state
+                if child.is_dir and child.children:
+                    self._set_selection_recursive(child, select_state)
 
     def toggle_expand(self, node):
         """Expand or collapse a directory."""
