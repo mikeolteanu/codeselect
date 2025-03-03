@@ -14,7 +14,7 @@ CODESELECT_PATH="$USER_BIN/codeselect"
 
 # Download or create the file
 echo "Downloading CodeSelect..."
-curl -fsSL https://raw.githubusercontent.com/mikeolteanu/codeselect/main/codeselect.py -o "$CODESELECT_PATH" 2>/dev/null || {
+curl -fsSL https://raw.githubusercontent.com/mikeolteanu/codeselect/refs/heads/main/codeselect.py -o "$CODESELECT_PATH" 2>/dev/null || {
   echo "Error: Cannot download or find codeselect.py"
   exit 1
 }
