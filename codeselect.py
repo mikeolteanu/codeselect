@@ -709,6 +709,29 @@ class FileSelector:
             _set_expanded(self.root_node, expand)
             
         self.visible_nodes = flatten_tree(self.root_node)
+        
+    def collapse_to_root(self):
+        """Collapse everything except the root level."""
+        # Ensure root is expanded
+        self.root_node.expanded = True
+        
+        # Collapse all direct children of root
+        if self.root_node.children:
+            for child in self.root_node.children.values():
+                if child.is_dir:
+                    child.expanded = False
+                    # Recursively collapse all descendants
+                    self._collapse_recursive(child)
+                    
+        self.visible_nodes = flatten_tree(self.root_node)
+        
+    def _collapse_recursive(self, node):
+        """Helper method to recursively collapse all nodes."""
+        if node.is_dir and node.children:
+            node.expanded = False
+            for child in node.children.values():
+                if child.is_dir:
+                    self._collapse_recursive(child)
 
     def toggle_current_dir_selection(self):
         """Toggle selection of files in current directory only (no subdirectories)."""
@@ -790,7 +813,7 @@ class FileSelector:
         help_y += 1
         self.stdscr.addstr(help_y, 0, "↑/↓: Navigate  SPACE: Select  ←/→: Close/Open folder", curses.color_pair(6))
         help_y += 1
-        self.stdscr.addstr(help_y, 0, "T: Toggle dir only  E: Expand dir  C: Collapse dir", curses.color_pair(6))
+        self.stdscr.addstr(help_y, 0, "T: Toggle dir only  E: Expand dir  C: Collapse dir  R: Root view", curses.color_pair(6))
         help_y += 1
         clip_status = "ON" if self.copy_to_clipboard else "OFF"
         self.stdscr.addstr(help_y, 0, f"A: Select All  N: Select None  B: Clipboard ({clip_status})  X: Exit  D: Done", curses.color_pair(6))
@@ -892,6 +915,10 @@ class FileSelector:
             elif key in [ord('c'), ord('C')]:
                 # Collapse all
                 self.expand_all(False)
+                
+            elif key in [ord('r'), ord('R')]:
+                # Collapse to root level
+                self.collapse_to_root()
 
             elif key in [ord('t'), ord('T')]:
                 # Toggle selection of current directory only
