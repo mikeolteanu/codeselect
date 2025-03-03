@@ -693,14 +693,21 @@ class FileSelector:
         self.max_visible = self.height - 6  # One more line for stats at top
 
     def expand_all(self, expand=True):
-        """Expand or collapse all directories."""
+        """Expand or collapse directories recursively from current selection."""
         def _set_expanded(node, expand):
             if node.is_dir and node.children:
                 node.expanded = expand
                 for child in node.children.values():
                     _set_expanded(child, expand)
 
-        _set_expanded(self.root_node, expand)
+        # Get the currently selected node
+        if self.current_index < len(self.visible_nodes):
+            current_node, _ = self.visible_nodes[self.current_index]
+            _set_expanded(current_node, expand)
+        else:
+            # Fallback to root if no valid selection
+            _set_expanded(self.root_node, expand)
+            
         self.visible_nodes = flatten_tree(self.root_node)
 
     def toggle_current_dir_selection(self):
@@ -783,7 +790,7 @@ class FileSelector:
         help_y += 1
         self.stdscr.addstr(help_y, 0, "↑/↓: Navigate  SPACE: Select  ←/→: Close/Open folder", curses.color_pair(6))
         help_y += 1
-        self.stdscr.addstr(help_y, 0, "T: Toggle dir only  E: Expand all  C: Collapse all", curses.color_pair(6))
+        self.stdscr.addstr(help_y, 0, "T: Toggle dir only  E: Expand dir  C: Collapse dir", curses.color_pair(6))
         help_y += 1
         clip_status = "ON" if self.copy_to_clipboard else "OFF"
         self.stdscr.addstr(help_y, 0, f"A: Select All  N: Select None  B: Clipboard ({clip_status})  X: Exit  D: Done", curses.color_pair(6))
