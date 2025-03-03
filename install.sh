@@ -3,7 +3,7 @@
 
 set -e
 
-echo "Installing CodeSelect..."
+echo "Installing CodeSelect 1.0.2..."
 
 # Determine installation directory
 USER_BIN="$HOME/.local/bin"
