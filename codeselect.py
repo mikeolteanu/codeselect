@@ -82,7 +82,7 @@ class Config:
 
 config = Config
 
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 
 # Structure to represent a node in the file tree
 class Node:
@@ -1137,6 +1137,7 @@ def main():
     if not args.output:
         args.output = generate_output_filename(root_path, args.format)
 
+    print(f"CodeSelect v{__version__}")
     print(f"Scanning directory: {root_path}")
     root_node = build_file_tree(root_path)
 
